@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stream-container {
+    display: grid;
+    width: 76vw;
+}
+
+#stream-options {
+    display: none;
+    flex-direction: column;
+    border: 5px solid black;
+    border-radius: 10px;
+    position: absolute;
+    left: 40%;
+    top: 50%;
+}
+
+#stream-list {
+    list-style: none;
+}
