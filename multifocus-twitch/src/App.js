@@ -4,19 +4,21 @@ import { Routes, Route, useParams, useNavigate } from 'react-router-dom';
 
 const parent = "localhost";
 
-function Stream({stream, focusedStream}) {
+//TODO: Change between chats without whole page rendering
+function Stream({stream, focusedStream, numStreams}) {
   const shouldMute = focusedStream === stream ? false : true;
 
-  return ( <iframe title={`${stream}-stream`} class="stream" id={`${stream}-stream`} src={`https://player.twitch.tv/?channel=${stream}&parent=${parent}&muted=${shouldMute}`} allowfullscreen></iframe>
+  return ( <iframe title={`${stream}-stream`} style={{width: numStreams === 1 ? "100%" : numStreams <= 4 ? "49%" : "33%", height: numStreams === 1 ? "100%" : numStreams <= 4 ? "49%" : "33%"}} 
+    class="stream" id={`${stream}-stream`} src={`https://player.twitch.tv/?channel=${stream}&parent=${parent}&muted=${shouldMute}`} allowfullscreen></iframe>
   )
 }
 
-function StreamOptions ({streams}) {
+function StreamOptions ({streams, setStreams}) {
   return (
     streams.map(stream => {
       return (
       <li key={`${stream}`}>
-        <input type='checkbox' checked></input>
+        <input type='checkbox' defaultChecked onChange={(e) => {if (e.target.checked === false) {setStreams(streams.filter(elem => elem !== stream))}}}></input>
         <label>{stream}</label>
       </li>)
     })
@@ -33,14 +35,17 @@ function Button({stream, setFocusedStream}) {
   return ( <button id={`${stream}-button`} onClick={() => {setFocusedStream(stream)}}>{stream}</button> );
 }
 
-function handleSubmit(event, ref, newStreamer, navigate, [streams, setStreams]) {
+function handleSubmit(event, newStreamer, navigate, [streams, setStreams]) {
   event.preventDefault();
-  //Updating url page to include the newest streamer(s) added.
-  navigate(newStreamer);
-  setStreams([...streams, newStreamer]);
-  ref.current.style.display = "none";
-  return true;
 
+  if (!(streams.includes(newStreamer))) {  
+    //Updating url page to include the newest streamer(s) added.
+    navigate(newStreamer);
+    setStreams([...streams, newStreamer]);
+  }
+
+  
+  
 }
 
 function StreamPage() {
@@ -50,23 +55,21 @@ function StreamPage() {
   const [focusedStream, setFocusedStream] = useState(streamers[0] ?? "");
   const [streams, setStreams] = useState(streamers);
   const [input, setInput] = useState("");
-  const ref = useRef(null);
+  const streamOptionRef = useRef(null);
 
   return (
     <div className='container'>
       <div class="stream-container">
-        {streams.map(stream => <Stream stream={stream} focusedStream={focusedStream} />)}
-        <div id="stream-options" ref={ref}>
+        {streams.map(stream => <Stream stream={stream} focusedStream={focusedStream} numStreams={streams.length} />)}
+        <div id="stream-options" ref={streamOptionRef}>
           <div>Currently Watching</div>
           <ul id="stream-list">
-          <StreamOptions streams={streams}/>
+          <StreamOptions streams={streams} setStreams={setStreams}/>
           </ul>
-          <form onSubmit={(e) => {handleSubmit(e, ref, input, navigate, [streams, setStreams]); setInput("")}}>
+          <form onSubmit={(e) => { handleSubmit(e, input, navigate, [streams, setStreams]); setInput("")}}>
             <input value={input} onChange={(e) => setInput(e.target.value)}></input>
             <div id="form-options">
-              <button type='button' onClick={() => ref.current.style.display = "none"}>Cancel</button>
-              <button type="button" onClick>Add Streamer</button>
-              <button type='submit'>Ok</button>
+              <button type='button' onClick={() => {streamOptionRef.current.style.display = "none"; setInput("")}}>Cancel</button>
             </div>
           </form>
         </div>
@@ -77,7 +80,7 @@ function StreamPage() {
           </div>
           <Chat focusedStream={focusedStream} />
           <div id="chat-options">
-            <button onClick={() => ref.current.style.display = "flex"}>Add Streamer</button>
+            <button onClick={() => {streamOptionRef.current.style.display = "flex"}}>Add Streamer</button>
             <button>Toggle Chat</button>
           </div>
         </div>

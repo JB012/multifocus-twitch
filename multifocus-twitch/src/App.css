@@ -3,11 +3,6 @@
     justify-content: space-between;
 }
 
-.stream-container {
-    display: grid;
-    width: 76vw;
-}
-
 #stream-options {
     display: none;
     flex-direction: column;
@@ -16,6 +11,13 @@
     position: absolute;
     left: 40%;
     top: 50%;
+}
+
+.stream-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 78vw;
+    justify-content: center;
 }
 
 #stream-list {
