@@ -9,17 +9,26 @@
     border: 5px solid black;
     border-radius: 10px;
     position: absolute;
-    left: 40%;
-    top: 50%;
+    left: 400px;
+    top: 500px;
 }
 
 .stream-container {
     display: flex;
     flex-wrap: wrap;
-    width: 78vw;
     justify-content: center;
+    align-content: center;
 }
 
+
+.chat {
+    width: 304px;
+    min-height: 90vh;
+}
+
+#chat-options {
+    display: flex;
+}
 #stream-list {
     list-style: none;
 }
