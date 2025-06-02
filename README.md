@@ -1,6 +1,8 @@
 # MultiFocus Twitch
 > A web application that allows you to watch multiple Twitch streams and switch between them.
 
+Demo: https://multifocus-twitch.vercel.app/
+
 ## How It's Made:
 Tech Used:
 * Twitch API
